@@ -23,4 +23,40 @@ CREATE TABLE Product (
 	UnitsInStock SMALLINT NOT NULL CHECK (UnitsInStock >= 0),
 	VatPercentage TINYINT NOT NULL CHECK (VatPercentage BETWEEN 0 AND 100)
 );
+
+CREATE TABLE Order (
+	Id INT IDENTITY(1,1) PRIMARY KEY,
+	OrderDate DATETIME NOT NULL DEFAULT GETDATE(),
+--	OrderLineCount SMALLINT NOT NULL CHECK (OrderLineCount >= 1),
+	TotalSum DECIMAL(7,2) NOT NULL CHECK (TotalSum >= 0),  
+--	CustomerFirstName VARCHAR(50) NOT NULL,
+--  CustomerLastName VARCHAR(50) NOT NULL,
+--  CustomerEmail VARCHAR(200) NOT NULL,
+--  CustomerPhone VARCHAR(20) NOT NULL,
+	CustomerId VARCHAR(255),
+	DeliveryStreetAddress VARCHAR(50),
+    DeliveryPostalCode VARCHAR(15),
+    DeliveryCity VARCHAR(30),
+    DeliveryCountry CHAR(2) DEFAULT 'FI', -- Hardcoded value, not need ask info in frontend
+	InvoicingStreetAddress VARCHAR(50),
+    InvoicingPostalCode VARCHAR(15),
+    InvoicingCity VARCHAR(30),
+    InvoicingCountry CHAR(2) DEFAULT 'FI', -- Hardcoded value, not need ask info in frontend
+	IsProcessed BIT,
+	IsShipped BIT
+);
+
+CREATE TABLE OrderLine (
+	Id INT IDENTITY(1,1) PRIMARY KEY,
+	OrderId INT NOT NULL,
+	ProductId INT NOT NULL,
+	UnitPrice DECIMAL(6,2) NOT NULL CHECK (UnitPrice >= 0),
+	Units TINYINT NOT NULL CHECKS(Units >= 1),
+	VatPercentage TINYINT NOT NULL CHECK (VatPercentage BETWEEN 0 AND 100),
+	FOREIGN KEY (OrderId) REFERENCES [Order] (Id),
+	FOREIGN KEY (ProductId) REFERENCES Product (Id)
+);
+	
+	
+	
 	
